@@ -26,6 +26,12 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: peter87623/tmp
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
