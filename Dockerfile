@@ -54,12 +54,46 @@ RUN dotnet publish \
     -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
     $PROJECT
 
-FROM debian:11.2-slim AS bullseye
-RUN apt-get update && apt-get install -y --no-install-recommends libicu67 && rm -rf /var/lib/apt/lists/*
+FROM restore as build-alpine-runtime
+ARG TARGETARCH
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG PROJECT
+
+RUN dotnet publish \
+    --output publish \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
+    --runtime linux-musl-${TARGETARCH/amd/x} \
+    --no-self-contained \
+    $PROJECT
+
+FROM restore as build-bullseye-runtime
+ARG TARGETARCH
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG PROJECT
+
+RUN dotnet publish \
+    --output publish \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
+    --runtime linux-${TARGETARCH/amd/x} \
+    --no-self-contained \
+    $PROJECT
+
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-bullseye-slim AS bullseye
 COPY --from=build-bullseye /build/publish/* /usr/local/bin/
 ENTRYPOINT [ "App" ]
 
-FROM alpine:3.15 AS alpine
-RUN apk add --update --no-cache libgcc libstdc++ icu
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-alpine3.14 AS alpine
 COPY --from=build-alpine /build/publish/* /usr/local/bin/
+ENTRYPOINT [ "App" ]
+
+FROM mcr.microsoft.com/dotnet/runtime:6.0.1-bullseye-slim AS bullseye-runtime
+COPY --from=build-bullseye-runtime /build/publish/* /usr/local/bin/
+ENTRYPOINT [ "App" ]
+
+FROM mcr.microsoft.com/dotnet/runtime:6.0.1-alpine3.14 AS alpine-runtime
+COPY --from=build-alpine-runtime /build/publish/* /usr/local/bin/
 ENTRYPOINT [ "App" ]

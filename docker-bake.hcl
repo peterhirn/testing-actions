@@ -1,7 +1,7 @@
 target "docker-metadata-action" {}
 
 group "default" {
-    targets = ["alpine", "bullseye"]
+    targets = ["alpine-runtime"]
 }
 
 target "base" {
@@ -23,4 +23,14 @@ target "alpine" {
 target "bullseye" {
   inherits = ["base"]
   target = "bullseye"
+}
+
+target "alpine-runtime" {
+  inherits = ["base"]
+  target = "alpine-runtime"
+}
+
+target "bullseye-runtime" {
+  inherits = ["base"]
+  target = "bullseye-runtime"
 }
