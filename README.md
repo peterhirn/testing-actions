@@ -18,5 +18,11 @@ Bake
 
 Release
 
-    gh release create v1.0.11-alpha.5 --prerelease --generate-notes
-    gh release create v1.0.11 --generate-notes
+    gh release create v1.0.12-alpha.1 --prerelease --generate-notes
+    gh release create v1.0.12-rc.1 --prerelease --generate-notes
+    gh release create v1.0.12 --generate-notes
+
+Run
+
+    docker run -it --rm peter87623/testing-actions -a -b -c
+    docker run -it --rm --platform linux/arm64 peter87623/testing-actions

@@ -4,9 +4,7 @@ open System
 open System.Reflection
 open System.Runtime.InteropServices
 
-let assembly = lazy (Assembly.GetEntryAssembly())
-
-let version = lazy (assembly.Value.GetName().Version)
+let version = lazy (Assembly.GetExecutingAssembly().GetName().Version)
 
 [<EntryPoint>]
 let main args =
