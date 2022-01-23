@@ -45,18 +45,6 @@ jobs:
             latest=${{ env.RELEASE }}
             suffix=-alpine
 
-      - name: Docker meta alpine runtime
-        id: meta-alpine-runtime
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.IMAGE }}
-          tags: |
-            type=raw,enable=${{ env.RELEASE }},suffix=,value=runtime
-            ${{ env.TAGS }}
-          flavor: |
-            latest=false
-            suffix=-runtime
-
       - name: Docker meta bullseye
         id: meta-bullseye
         uses: docker/metadata-action@v3
@@ -82,15 +70,6 @@ jobs:
             ./docker-bake.hcl
             ${{ steps.meta-alpine.outputs.bake-file }}
           targets: alpine
-          push: true
-
-      - name: Build and push alpine runtime
-        uses: docker/bake-action@v1
-        with:
-          files: |
-            ./docker-bake.hcl
-            ${{ steps.meta-alpine-runtime.outputs.bake-file }}
-          targets: alpine-runtime
           push: true
 
       - name: Build and push bullseye
