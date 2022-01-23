@@ -15,7 +15,6 @@ jobs:
         type=ref,event=pr
         type=semver,pattern={{version}}
         type=semver,pattern={{major}}.{{minor}}
-        type=sha
     steps:
       -
         name: Checkout
@@ -36,9 +35,11 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.IMAGE }}
-          tags: ${{ env.TAGS }}
+          tags: |
+            type=raw,prefix=,suffix=,value=alpine
+            ${{ env.TAGS }}
           flavor: |
-            latest=auto
+            latest=true
             suffix=-alpine
       -
         name: Docker meta bullseye
@@ -46,9 +47,11 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ env.IMAGE }}
-          tags: ${{ env.TAGS }}
+          tags: |
+            type=raw,prefix=,suffix=,value=bullseye
+            ${{ env.TAGS }}
           flavor: |
-            latest=auto
+            latest=false
             suffix=-bullseye
       -
         name: Login to DockerHub
