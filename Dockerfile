@@ -16,7 +16,8 @@ RUN dotnet paket restore
 
 COPY src/ src/
 
-FROM restore as build-alpine-amd64
+FROM restore as build-alpine
+ARG TARGETARCH
 ARG CONFIGURATION
 ARG FRAMEWORK
 ARG TRIMMED
@@ -27,14 +28,15 @@ RUN dotnet publish \
     --output publish \
     --configuration $CONFIGURATION \
     --framework $FRAMEWORK \
-    --runtime linux-musl-x64 \
+    --runtime linux-musl-${TARGETARCH/amd/x} \
     --self-contained \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
     $PROJECT
 
-FROM restore as build-bullseye-amd64
+FROM restore as build-bullseye
+ARG TARGETARCH
 ARG CONFIGURATION
 ARG FRAMEWORK
 ARG TRIMMED
@@ -45,87 +47,12 @@ RUN dotnet publish \
     --output publish \
     --configuration $CONFIGURATION \
     --framework $FRAMEWORK \
-    --runtime linux-x64 \
+    --runtime linux-${TARGETARCH/amd/x} \
     --self-contained \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
     $PROJECT
-
-FROM restore as build-alpine-arm64
-ARG CONFIGURATION
-ARG FRAMEWORK
-ARG TRIMMED
-ARG SELF_EXTRACT
-ARG PROJECT
-
-RUN dotnet publish \
-    --output publish \
-    --configuration $CONFIGURATION \
-    --framework $FRAMEWORK \
-    --runtime linux-musl-arm64 \
-    --self-contained \
-    -p:PublishSingleFile=true \
-    -p:PublishTrimmed=$TRIMMED \
-    -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
-    $PROJECT
-
-FROM restore as build-bullseye-arm64
-ARG CONFIGURATION
-ARG FRAMEWORK
-ARG TRIMMED
-ARG SELF_EXTRACT
-ARG PROJECT
-
-RUN dotnet publish \
-    --output publish \
-    --configuration $CONFIGURATION \
-    --framework $FRAMEWORK \
-    --runtime linux-arm64 \
-    --self-contained \
-    -p:PublishSingleFile=true \
-    -p:PublishTrimmed=$TRIMMED \
-    -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
-    $PROJECT
-
-FROM restore as build-alpine-arm
-ARG CONFIGURATION
-ARG FRAMEWORK
-ARG TRIMMED
-ARG SELF_EXTRACT
-ARG PROJECT
-
-RUN dotnet publish \
-    --output publish \
-    --configuration $CONFIGURATION \
-    --framework $FRAMEWORK \
-    --runtime linux-musl-arm \
-    --self-contained \
-    -p:PublishSingleFile=true \
-    -p:PublishTrimmed=$TRIMMED \
-    -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
-    $PROJECT
-
-FROM restore as build-bullseye-arm
-ARG CONFIGURATION
-ARG FRAMEWORK
-ARG TRIMMED
-ARG SELF_EXTRACT
-ARG PROJECT
-
-RUN dotnet publish \
-    --output publish \
-    --configuration $CONFIGURATION \
-    --framework $FRAMEWORK \
-    --runtime linux-arm \
-    --self-contained \
-    -p:PublishSingleFile=true \
-    -p:PublishTrimmed=$TRIMMED \
-    -p:IncludeNativeLibrariesForSelfExtract=$SELF_EXTRACT \
-    $PROJECT
-
-FROM build-bullseye-$TARGETARCH as build-bullseye
-FROM build-alpine-$TARGETARCH as build-alpine
 
 FROM debian:11.2-slim AS bullseye
 RUN apt-get update && apt-get install -y --no-install-recommends libicu67 && rm -rf /var/lib/apt/lists/*
