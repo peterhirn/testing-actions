@@ -8,7 +8,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      IMAGE: peter87623/tmp
+      IMAGE: peter87623/testing-actions
       RELEASE: ${{ !github.event.release.prerelease }}
       VERSION: ${{ github.event.release.tag_name }}
       TAGS: |

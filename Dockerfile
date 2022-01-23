@@ -19,12 +19,12 @@ COPY src/ src/
 
 FROM restore as build-alpine
 ARG TARGETARCH
+ARG PROJECT
+ARG VERSION
 ARG CONFIGURATION
 ARG FRAMEWORK
 ARG TRIMMED
 ARG SELF_EXTRACT
-ARG PROJECT
-ARG VERSION
 
 RUN dotnet publish \
     --output publish \
@@ -40,17 +40,17 @@ RUN dotnet publish \
 
 FROM restore as build-bullseye
 ARG TARGETARCH
+ARG PROJECT
+ARG VERSION
 ARG CONFIGURATION
 ARG FRAMEWORK
 ARG TRIMMED
 ARG SELF_EXTRACT
-ARG PROJECT
-ARG VERSION
 
 RUN dotnet publish \
     --output publish \
     --configuration ${CONFIGURATION} \
-    --framework $FRAMEWORK \
+    --framework ${FRAMEWORK} \
     --runtime linux-${TARGETARCH/amd/x} \
     --self-contained \
     -p:Version=${VERSION/v/} \
@@ -60,16 +60,16 @@ RUN dotnet publish \
     $PROJECT
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-bullseye-slim AS bullseye
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-ENV DOTNET_gcServer=1
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_gcServer=1
 
 COPY --from=build-bullseye /build/publish/ /usr/local/share/myapp/
 RUN ln -s /usr/local/share/myapp/myapp /usr/local/bin/myapp
 ENTRYPOINT [ "myapp" ]
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-alpine3.14 AS alpine
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-ENV DOTNET_gcServer=1
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_gcServer=1
 
 COPY --from=build-alpine /build/publish/ /usr/local/share/myapp/
 RUN ln -s /usr/local/share/myapp/myapp /usr/local/bin/myapp
