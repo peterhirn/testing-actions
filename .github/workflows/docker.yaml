@@ -66,6 +66,7 @@ jobs:
       - name: Build and push alpine
         uses: docker/bake-action@v1
         with:
+          set: alpine.args.VERSION={{major}}.{{minor}}.{{patch}}
           files: |
             ./docker-bake.hcl
             ${{ steps.meta-alpine.outputs.bake-file }}
@@ -75,6 +76,7 @@ jobs:
       - name: Build and push bullseye
         uses: docker/bake-action@v1
         with:
+          set: bullseye.args.VERSION={{major}}.{{minor}}.{{patch}}
           files: |
             ./docker-bake.hcl
             ${{ steps.meta-bullseye.outputs.bake-file }}
