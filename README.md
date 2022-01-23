@@ -10,8 +10,13 @@ Build
 
 Build specific platform
 
-    docker buildx build --platform linux/arm/v7 --target alpine -t tmp --load .
+    docker buildx build --platform linux/arm64 --target alpine -t tmp --load .
 
 Bake
 
     docker buildx bake -f docker-bake.hcl
+
+Release
+
+    gh release create v1.0.11-alpha.5 --prerelease --generate-notes
+    gh release create v1.0.11 --generate-notes
