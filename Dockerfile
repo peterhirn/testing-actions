@@ -59,6 +59,23 @@ RUN dotnet publish \
     --output Publish \
     --configuration $CONFIGURATION \
     --framework $FRAMEWORK \
+    --runtime linux-musl-arm64 \
+    --self-contained \
+    -p:PublishSingleFile=true \
+    -p:PublishTrimmed=$TRIMMED \
+    -p:IncludeNativeLibrariesForSelfExtract=true \
+    $PROJECT
+
+FROM restore as build-bullseye-arm64
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
+RUN dotnet publish \
+    --output Publish \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
     --runtime linux-arm64 \
     --self-contained \
     -p:PublishSingleFile=true \
@@ -66,9 +83,24 @@ RUN dotnet publish \
     -p:IncludeNativeLibrariesForSelfExtract=true \
     $PROJECT
 
-FROM build-alpine-arm64 as build-bullseye-arm64
-
 FROM restore as build-alpine-arm
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
+RUN dotnet publish \
+    --output Publish \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
+    --runtime linux-musl-arm \
+    --self-contained \
+    -p:PublishSingleFile=true \
+    -p:PublishTrimmed=$TRIMMED \
+    -p:IncludeNativeLibrariesForSelfExtract=true \
+    $PROJECT
+
+FROM restore as build-bullseye-arm
 ARG CONFIGURATION
 ARG FRAMEWORK
 ARG TRIMMED
@@ -84,8 +116,6 @@ RUN dotnet publish \
     -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=true \
     $PROJECT
-
-FROM build-alpine-arm as build-bullseye-arm
 
 FROM build-bullseye-$TARGETARCH as build-bullseye
 FROM build-alpine-$TARGETARCH as build-alpine
