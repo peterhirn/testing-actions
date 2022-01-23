@@ -34,7 +34,7 @@ jobs:
           images: ${{ env.IMAGE }}
           tags: |
             type=raw,enable=${{ env.RELEASE }},suffix=,value=alpine
-            type=semver,enable=${{ env.RELEASE }},suffix=,pattern={{version}}
+            type=semver,suffix=,pattern={{version}}
             type=semver,enable=${{ env.RELEASE }},suffix=,pattern={{major}}.{{minor}}
             type=semver,enable=${{ env.RELEASE }},suffix=,pattern={{major}}
             ${{ env.TAGS }}
