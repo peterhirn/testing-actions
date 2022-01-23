@@ -35,7 +35,7 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            ${{ !github.event.release.prerelease && "type=raw,prefix=,suffix=,value=alpine" }}
+            type=raw,enable=${{ !github.event.release.prerelease }},prefix=,suffix=,value=alpine
             ${{ env.TAGS }}
           flavor: |
             latest=${{ !github.event.release.prerelease }}
@@ -47,7 +47,7 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            ${{ !github.event.release.prerelease && "type=raw,prefix=,suffix=,value=bullseye" }}
+            type=raw,enable=${{ !github.event.release.prerelease }},prefix=,suffix=,value=bullseye
             ${{ env.TAGS }}
           flavor: |
             latest=false
