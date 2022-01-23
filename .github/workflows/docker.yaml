@@ -8,8 +8,9 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     env:
-      RELEASE: ${{ !github.event.release.prerelease }}
       IMAGE: peter87623/tmp
+      RELEASE: ${{ !github.event.release.prerelease }}
+      VERSION: ${{ github.event.release.tag_name }}
       TAGS: |
         type=ref,event=branch
         type=ref,event=pr
@@ -66,6 +67,7 @@ jobs:
       - name: Build and push alpine
         uses: docker/bake-action@v1
         with:
+          set: alpine.args.VERSION=${{ env.VERSION }}
           files: |
             ./docker-bake.hcl
             ${{ steps.meta-alpine.outputs.bake-file }}
@@ -75,6 +77,7 @@ jobs:
       - name: Build and push bullseye
         uses: docker/bake-action@v1
         with:
+          set: bullseye.args.VERSION=${{ env.VERSION }}
           files: |
             ./docker-bake.hcl
             ${{ steps.meta-bullseye.outputs.bake-file }}
