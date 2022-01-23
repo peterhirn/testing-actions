@@ -35,10 +35,10 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=raw,prefix=,suffix=,value=alpine
+            ${{ !github.event.release.prerelease && "type=raw,prefix=,suffix=,value=alpine" }}
             ${{ env.TAGS }}
           flavor: |
-            latest=true
+            latest=${{ !github.event.release.prerelease }}
             suffix=-alpine
       -
         name: Docker meta bullseye
@@ -47,7 +47,7 @@ jobs:
         with:
           images: ${{ env.IMAGE }}
           tags: |
-            type=raw,prefix=,suffix=,value=bullseye
+            ${{ !github.event.release.prerelease && "type=raw,prefix=,suffix=,value=bullseye" }}
             ${{ env.TAGS }}
           flavor: |
             latest=false
