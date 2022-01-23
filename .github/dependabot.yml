@@ -1,6 +1,14 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
+  # NOTE: not compatible with paket, see https://github.com/dependabot/dependabot-core/issues/2190
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
