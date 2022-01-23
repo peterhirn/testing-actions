@@ -1,0 +1,8 @@
+version 6.2.1
+
+framework: net6.0
+storage: none
+
+source https://api.nuget.org/v3/index.json
+nuget FSharp.Core
+nuget FsToolkit.ErrorHandling

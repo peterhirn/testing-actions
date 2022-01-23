@@ -8,6 +8,14 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    env:
+      IMAGE: peter87623/tmp
+      TAGS: |
+        type=ref,event=branch
+        type=ref,event=pr
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+        type=sha
     steps:
       -
         name: Checkout
@@ -16,17 +24,25 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Docker meta
-        id: meta
+        name: Docker meta alpine
+        id: meta-alpine
         uses: docker/metadata-action@v3
         with:
-          images: peter87623/tmp
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha
+          images: $IMAGE
+          tags: $TAGS
+          flavor: |
+            latest=auto
+            suffix=alpine
+      -
+        name: Docker meta bullseye
+        id: meta-bullseye
+        uses: docker/metadata-action@v3
+        with:
+          images: $IMAGE
+          tags: $TAGS
+          flavor: |
+            latest=auto
+            suffix=bullseye
       -
         name: Login to DockerHub
         uses: docker/login-action@v1
@@ -34,11 +50,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push alpine
         uses: docker/bake-action@v1
         with:
           files: |
             ./docker-bake.hcl
-            ${{ steps.meta.outputs.bake-file }}
-          targets: build
+            ${{ steps.meta-alpine.outputs.bake-file }}
+          targets: alpine
+          push: true
+      -
+        name: Build and push bullseye
+        uses: docker/bake-action@v1
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.meta-bullseye.outputs.bake-file }}
+          targets: bullseye
           push: true
