@@ -1,0 +1,8 @@
+.git/
+.github/
+
+.ionide/
+paket-files/
+
+**/bin/
+**/obj/

@@ -1,3 +1,8 @@
+ARG CONFIGURATION=Release
+ARG FRAMEWORK=net6.0
+ARG TRIMMED=true
+ARG PROJECT=src/App.fsproj
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0.101-alpine3.14 as restore
 WORKDIR /build
 
@@ -11,54 +16,74 @@ RUN dotnet paket restore
 COPY src/ src/
 
 FROM restore as build-alpine-amd64
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
 RUN dotnet publish \
     --output Publish \
-    --configuration Release \
-    --framework net6.0 \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
     --runtime linux-musl-x64 \
     --self-contained \
     -p:PublishSingleFile=true \
-    -p:PublishTrimmed=true \
+    -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=true \
-    src/App.fsproj
+    $PROJECT
 
 FROM restore as build-bullseye-amd64
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
 RUN dotnet publish \
     --output Publish \
-    --configuration Release \
-    --framework net6.0 \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
     --runtime linux-x64 \
     --self-contained \
     -p:PublishSingleFile=true \
-    -p:PublishTrimmed=true \
+    -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=true \
-    src/App.fsproj
+    $PROJECT
 
 FROM restore as build-alpine-arm64
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
 RUN dotnet publish \
     --output Publish \
-    --configuration Release \
-    --framework net6.0 \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
     --runtime linux-arm64 \
     --self-contained \
     -p:PublishSingleFile=true \
-    -p:PublishTrimmed=true \
+    -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=true \
-    src/App.fsproj
+    $PROJECT
 
 FROM build-alpine-arm64 as build-bullseye-arm64
 
 FROM restore as build-alpine-arm
+ARG CONFIGURATION
+ARG FRAMEWORK
+ARG TRIMMED
+ARG PROJECT
+
 RUN dotnet publish \
     --output Publish \
-    --configuration Release \
-    --framework net6.0 \
+    --configuration $CONFIGURATION \
+    --framework $FRAMEWORK \
     --runtime linux-arm \
     --self-contained \
     -p:PublishSingleFile=true \
-    -p:PublishTrimmed=true \
+    -p:PublishTrimmed=$TRIMMED \
     -p:IncludeNativeLibrariesForSelfExtract=true \
-    src/App.fsproj
+    $PROJECT
 
 FROM build-alpine-arm as build-bullseye-arm
 
