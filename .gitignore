@@ -1,6 +1,11 @@
 .ionide/
+.vs/
+
 **/*/bin/
 **/*/obj/
 
 paket-files/
 assets/
+
+test-results.xml
+test-coverage.xml

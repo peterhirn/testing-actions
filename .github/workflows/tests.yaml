@@ -1,0 +1,41 @@
+name: tests
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Run tests
+        run: |
+          dotnet tool restore
+          dotnet paket restore
+
+          dotnet test \
+            --logger "junit;LogFilePath=../test-results.xml" \
+            --configuration Release \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=cobertura \
+            /p:ExcludeByAttribute=GeneratedCodeAttribute%2CCompilerGeneratedAttribute \
+            /p:CoverletOutput=../test-coverage.xml
+
+      - name: Publish test results
+        uses: mikepenz/action-junit-report@v2
+        if: always()
+        with:
+          report_paths: test-results.xml
+
+      - name: Publish coverage
+        uses: 5monkeys/cobertura-action@master
+        with:
+          path: test-coverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 75

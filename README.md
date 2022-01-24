@@ -3,6 +3,7 @@
 [![GitHub release](https://img.shields.io/github/release/peterhirn/testing-actions.svg?logo=github&style=flat-square)](https://github.com/peterhirn/testing-actions/releases/latest)
 [![Docker workflow](https://img.shields.io/github/workflow/status/peterhirn/testing-actions/docker?label=docker&logo=github&style=flat-square)](https://github.com/peterhirn/testing-actions/actions?workflow=docker)
 [![Assets workflow](https://img.shields.io/github/workflow/status/peterhirn/testing-actions/assets?label=assets&logo=github&style=flat-square)](https://github.com/peterhirn/testing-actions/actions?workflow=assets)
+[![Tests workflow](https://img.shields.io/github/workflow/status/peterhirn/testing-actions/tests?label=tests&logo=github&style=flat-square)](https://github.com/peterhirn/testing-actions/actions?workflow=tests)
 [![Docker pulls](https://img.shields.io/docker/pulls/peter87623/testing-actions.svg?logo=docker&style=flat-square)](https://hub.docker.com/r/peter87623/testing-actions)
 
 Build

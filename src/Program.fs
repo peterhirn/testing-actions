@@ -6,6 +6,8 @@ open System.Runtime.InteropServices
 
 let version = lazy (Assembly.GetExecutingAssembly().GetName().Version)
 
+let add x y = x + y
+
 [<EntryPoint>]
 let main args =
     try

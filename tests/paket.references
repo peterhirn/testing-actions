@@ -1,0 +1,8 @@
+group Test
+    NUnit
+    FsUnit
+    FsCheck.Nunit
+    Microsoft.NET.Test.Sdk
+    NUnit3TestAdapter
+    coverlet.msbuild
+    JunitXml.TestLogger

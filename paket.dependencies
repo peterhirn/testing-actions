@@ -6,3 +6,16 @@ storage: none
 source https://api.nuget.org/v3/index.json
 nuget FSharp.Core
 nuget FsToolkit.ErrorHandling
+
+group Test
+    framework: net6.0
+    storage: none
+
+    source https://api.nuget.org/v3/index.json
+    nuget NUnit
+    nuget FsUnit
+    nuget FsCheck.Nunit
+    nuget Microsoft.NET.Test.Sdk
+    nuget NUnit3TestAdapter
+    nuget coverlet.msbuild
+    nuget JunitXml.TestLogger
