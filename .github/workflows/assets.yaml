@@ -1,0 +1,30 @@
+name: assets
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build assets
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          docker build --build-arg VERSION=${{ github.event.release.tag_name }} -f Dockerfile.assets -t assets .
+          docker create --name assets assets
+          docker cp assets:/assets assets
+          docker rm assets
+
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} assets/*
