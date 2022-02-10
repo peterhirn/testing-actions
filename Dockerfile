@@ -59,7 +59,7 @@ RUN dotnet publish \
     -p:IncludeNativeLibrariesForSelfExtract=${SELF_EXTRACT} \
     $PROJECT
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-bullseye-slim AS bullseye
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.2-bullseye-slim AS bullseye
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_gcServer=1
 
@@ -67,7 +67,7 @@ COPY --from=build-bullseye /build/publish/ /usr/local/share/myapp/
 RUN ln -s /usr/local/share/myapp/myapp /usr/local/bin/myapp
 ENTRYPOINT [ "myapp" ]
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.1-alpine3.14 AS alpine
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.2-bullseye-slim AS alpine
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_gcServer=1
 
