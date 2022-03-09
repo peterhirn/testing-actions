@@ -5,7 +5,7 @@ ARG FRAMEWORK=net6.0
 ARG TRIMMED=true
 ARG SELF_EXTRACT=false
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0.101-alpine3.14 as restore
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0.201-alpine3.14 as restore
 WORKDIR /build
 
 COPY .config/ .config/
